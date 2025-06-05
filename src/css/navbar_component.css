@@ -1,0 +1,67 @@
+.navbar {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  background-color: #d5eef8;
+  color: rgb(23, 25, 29);
+  padding: 1rem 2rem;
+  font-family: 'Segoe UI', sans-serif;
+  position: relative;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+.title-navbar {
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+.profile-dropdown-navbar {
+  position: relative;
+  cursor: pointer;
+}
+
+.profile-navbar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.icon-navbar {
+  font-size: 1.5rem;
+}
+
+.profile-navbar {
+  font-size: 1rem;
+}
+
+.dropdown-content-navbar {
+  position: absolute;
+  top: 110%;
+  right: 0;
+  background-color: #fff;
+  color: #2f3542;
+  border: 1px solid #dcdde1;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  min-width: 160px;
+  display: none;
+  flex-direction: column;
+  z-index: 1000;
+}
+
+.dropdown-content-navbar a {
+  padding: 12px 16px;
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.2s ease;
+}
+
+.dropdown-content-navbar a:hover {
+  background-color: #f1f2f6;
+}
+
+/* Affiche le menu au survol */
+.profile-dropdown-navbar:hover .dropdown-content-navbar {
+  display: flex;
+}

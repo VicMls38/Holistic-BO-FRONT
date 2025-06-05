@@ -1,6 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
+
+import '../css/register.css';
+
 
 const Register = () => {
   const [username, setUsername] = useState('');
@@ -13,7 +17,7 @@ const Register = () => {
     setError('');
 
     try {
-      const response = await axios.post('http://localhost:3000/api/users/register', {
+      const response = await axios.post('https://ethan-server.com:8443/api/users/register', {
         username,
         password,
       });
@@ -35,30 +39,29 @@ const Register = () => {
 
   return (
     <div style={{ padding: '2rem' }}>
-      <h2>Inscription</h2>
-      <form onSubmit={handleRegister}>
-        <div>
-          <label>Nom d'utilisateur</label><br />
-          <input
-            type="text"
-            value={username}
-            onChange={e => setUsername(e.target.value)}
-            required
-          />
-        </div>
-        <div style={{ marginTop: '1rem' }}>
-          <label>Mot de passe</label><br />
-          <input
-            type="password"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-            required
-          />
-        </div>
-        <button type="submit" style={{ marginTop: '1.5rem' }}>
-          S'inscrire
+      <h2 className='title-register'>Register</h2>
+      <form className='form-register' onSubmit={handleRegister}>
+        <input
+          className='register-input-username'
+          placeholder="Username"
+          type="text"
+          value={username}
+          onChange={e => setUsername(e.target.value)}
+          required
+        />
+        <input
+          className='register-input-password'
+          placeholder="Password"
+          type="password"
+          value={password}
+          onChange={e => setPassword(e.target.value)}
+          required
+        />
+        <button className='submit-register' type="submit">
+          Register
         </button>
         {error && <p style={{ color: 'red', marginTop: '1rem' }}>{error}</p>}
+        <p className='subtext-register'>Already have an account ? <Link to="/login">Login</Link></p>
       </form>
     </div>
   );

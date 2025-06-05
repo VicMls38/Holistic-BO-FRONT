@@ -1,12 +1,17 @@
-import { useAuth } from '../auth/AuthContext';
+import React from 'react';
+import Navbar from '../components/Navbar';
+import '../css/home.css';
 
-const Home = () => {
-  const { logout } = useAuth();
+const Home: React.FC = () => {
+  
 
   return (
-    <div>
-      <h1>Bienvenue !</h1>
-      <button onClick={logout}>Se déconnecter</button>
+    <div className="container">
+      <Navbar />
+      <main className="main">
+        <h1 className="title">Bienvenue !</h1>
+        
+      </main>
     </div>
   );
 };

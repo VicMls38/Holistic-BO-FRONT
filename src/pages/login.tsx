@@ -3,6 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { Link } from 'react-router-dom';
 
+import '../css/login.css';
+
+
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -17,22 +20,27 @@ const Login = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <div style={{ padding: '2rem' }}>
+    <h2 className='title-login'>Connexion</h2>
+    <form className='form-login' onSubmit={handleSubmit}>
       <input
+        className="login-input-username"
         type="text"
         placeholder="Username"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
       />
       <input
+        className="login-input-password"
         type="password"
         placeholder="Password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
-      <button type="submit">Se connecter</button>
-      <p>Pas encore de compte ? <Link to="/register">Créer un compte</Link></p>
+      <button className='submit-login' type="submit">Login</button>
+      <p className='subtext-login'>You don't have an account ? <Link to="/register">Register</Link></p>
     </form>
+    </div>
   );
 };
 

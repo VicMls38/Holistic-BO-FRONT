@@ -1,0 +1,39 @@
+.container {
+  height: 100vh;
+  width: 100vw; /* 👈 ajoute ça pour forcer la largeur */
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(to right, #d0e8f2, #f5f5f5, #d0e8f2);
+  overflow-x: hidden; /* évite le scroll horizontal */
+}
+
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.title {
+  font-size: 2rem;
+  margin-bottom: 24px;
+  color: #2f3640;
+}
+
+.logoutButton {
+  padding: 12px 24px;
+  font-size: 1rem;
+  border: none;
+  background-color: #e84118;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.logoutButton:hover {
+  background-color: #c23616;
+}
