@@ -16,7 +16,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const login = async (username: string, password: string) => {
     try {
-      const res = await axios.post('https://ethan-server.com:8443/api/users/login', {
+      // const res = await axios.post('https://ethan-server.com:8443/api/users/login', {
+      const res = await axios.post('http://localhost:3000/api/users/login', {
         username,
         password,
       });
