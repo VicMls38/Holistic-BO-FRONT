@@ -4,11 +4,13 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #2c3e50; /* couleur foncée */
+  background-color: #88d581; /* couleur foncée */
   padding: 10px 20px;
   color: white;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   position: relative;
+  border-bottom-left-radius: 25px;
+  border-bottom-right-radius: 25px;
 }
 
 .title-navbar {

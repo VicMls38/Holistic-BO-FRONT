@@ -22,6 +22,131 @@ interface ParsedContent {
   uri?: string;
 }
 
+
+const OrderEditor = ({
+  items,
+  setItems,
+}: {
+  items: ContentItem[];
+  setItems: React.Dispatch<React.SetStateAction<ContentItem[]>>;
+}) => {
+  const moveItem = async (index: number, direction: 'up' | 'down') => {
+    const itemId = items[index].ID_Element;
+    const url =
+      direction === 'up'
+        ? 'https://ethan-server.com:8443/api/content/moveUp'
+        : 'https://ethan-server.com:8443/api/content/moveDown';
+
+    try {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: itemId }),
+      });
+      if (!res.ok) throw new Error('Erreur lors du déplacement');
+
+      // Mise à jour locale uniquement si la requête réussit
+      setItems((prev) => {
+        const newItems = [...prev];
+        if (direction === 'up' && index > 0) {
+          [newItems[index - 1], newItems[index]] = [newItems[index], newItems[index - 1]];
+        } else if (direction === 'down' && index < newItems.length - 1) {
+          [newItems[index + 1], newItems[index]] = [newItems[index], newItems[index + 1]];
+        }
+        return newItems;
+      });
+    } catch (error) {
+      alert(`Impossible de déplacer l'élément : ${(error as Error).message}`);
+    }
+  };
+
+  const deleteItem = async (id: number) => {
+    try {
+      const res = await fetch('https://ethan-server.com:8443/api/content/deleteElement', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id }),
+      });
+      if (!res.ok) {
+        throw new Error('Erreur lors de la suppression');
+      }
+      setItems((prev) => prev.filter((item) => item.ID_Element !== id));
+    } catch (error) {
+      alert(`Impossible de supprimer l'élément : ${(error as Error).message}`);
+    }
+  };
+
+  return (
+    <div
+      className="order-editor"
+      style={{ border: '1px solid #ccc', padding: 10, width: '20vw', maxHeight: 400, overflowY: 'auto' }}
+    >
+      <h3>Modifier l'ordre</h3>
+      {items.length === 0 && <p>Aucun élément à réordonner</p>}
+      <ul style={{ listStyleType: 'none', padding: 0, margin: 0 }}>
+        {items.map((item, index) => {
+          let label = '';
+          try {
+            const content: ParsedContent =
+              typeof item.Content_Element === 'string'
+                ? JSON.parse(item.Content_Element)
+                : item.Content_Element;
+            if (item.Type_Element === 'text') label = content.text || 'Texte';
+            else if (item.Type_Element === 'button') label = content.libelle || 'Bouton';
+            else if (item.Type_Element === 'image') label = 'Image';
+          } catch {
+            label = 'Contenu invalide';
+          }
+
+          return (
+            <li key={item.ID_Element} style={{ display: 'flex', alignItems: 'center', marginBottom: 6 }}>
+              <span style={{ flexGrow: 1, overflow: 'hidden', textOverflow: 'ellipsis' }}>{label}</span>
+
+              <button
+                type="button"
+                onClick={() => moveItem(index, 'up')}
+                disabled={index === 0}
+                style={{ marginRight: 5 }}
+                aria-label="Déplacer vers le haut"
+              >
+                ↑
+              </button>
+
+              <button
+                type="button"
+                onClick={() => moveItem(index, 'down')}
+                disabled={index === items.length - 1}
+                aria-label="Déplacer vers le bas"
+                style={{ marginRight: 5 }}
+              >
+                ↓
+              </button>
+
+              <button
+                type="button"
+                onClick={() => deleteItem(item.ID_Element)}
+                aria-label="Supprimer l'élément"
+                style={{
+                  backgroundColor: 'red',
+                  color: 'white',
+                  border: 'none',
+                  padding: '4px 8px',
+                  cursor: 'pointer',
+                  borderRadius: 3,
+                }}
+              >
+                Supprimer
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+};
+
+
+
 const Home = () => {
   const [pages, setPages] = useState<Page[]>([]);
   const [page, setPage] = useState('');
@@ -35,11 +160,10 @@ const Home = () => {
   const [newPageTitle, setNewPageTitle] = useState('');
   const [newPageSlug, setNewPageSlug] = useState('');
 
-
   useEffect(() => {
     const fetchPages = async () => {
       try {
-        const res = await fetch('http://localhost:3000/api/pages/pages');
+        const res = await fetch('https://ethan-server.com:8443/api/pages/pages');
         if (!res.ok) throw new Error(`Erreur HTTP: ${res.status}`);
         const data = await res.json();
         const simplifiedPages = data.map((p: any) => ({
@@ -66,7 +190,7 @@ const Home = () => {
 
       setIsLoading(true);
       try {
-        const res = await fetch(`http://localhost:3000/api/content/page/${page}`);
+        const res = await fetch(`https://ethan-server.com:8443/api/content/page/${page}`);
         if (!res.ok) throw new Error(`Erreur HTTP: ${res.status}`);
         const data = await res.json();
         setPreviewItems(data);
@@ -81,9 +205,7 @@ const Home = () => {
     fetchContent();
   }, [page]);
 
-
-
-   const handleCreatePage = async (e: React.FormEvent) => {
+  const handleCreatePage = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!newPageTitle.trim() || !newPageSlug.trim()) {
@@ -92,7 +214,7 @@ const Home = () => {
     }
 
     try {
-      const res = await fetch('http://localhost:3000/api/pages/addPage', {
+      const res = await fetch('https://ethan-server.com:8443/api/pages/addPage', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -111,8 +233,8 @@ const Home = () => {
       setNewPageTitle('');
       setNewPageSlug('');
 
-      // Recharger les pages
-      const updated = await fetch('http://localhost:3000/api/pages/pages');
+      // Actualiser la liste des pages
+      const updated = await fetch('https://ethan-server.com:8443/api/pages/pages');
       const updatedData = await updated.json();
       const simplified = updatedData.map((p: any) => ({
         id: p.ID_Page.toString(),
@@ -153,7 +275,7 @@ const Home = () => {
         const formData = new FormData();
         formData.append('image', imageFile);
 
-        const uploadRes = await fetch('http://localhost:3000/api/upload-image', {
+        const uploadRes = await fetch('https://ethan-server.com:8443/api/upload-image', {
           method: 'POST',
           body: formData,
         });
@@ -178,7 +300,7 @@ const Home = () => {
     };
 
     try {
-      const res = await fetch('http://localhost:3000/api/content/addElement', {
+      const res = await fetch('https://ethan-server.com:8443/api/content/addElement', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -190,7 +312,8 @@ const Home = () => {
         setButtonLabel('');
         setButtonLink('');
         setImageFile(null);
-        const updatedContent = await fetch(`http://localhost:3000/api/content/page/${page}`);
+        // Recharger le contenu pour mise à jour
+        const updatedContent = await fetch(`https://ethan-server.com:8443/api/content/page/${page}`);
         const data = await updatedContent.json();
         setPreviewItems(data);
       } else {
@@ -204,176 +327,221 @@ const Home = () => {
   };
 
   return (
-    <div className="container">
+    <>
       <Navbar />
-      <main className="main">
-        <h1 className="title">Bienvenue !</h1>
-        <h2>Créer une nouvelle page</h2>
-      <form onSubmit={handleCreatePage} style={{ marginBottom: '40px', width: '20vw' }}>
-        <div>
-          <label>Titre de la page :</label>
-          <input
-            type="text"
-            value={newPageTitle}
-            onChange={(e) => setNewPageTitle(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label>Slug de la page :</label>
-          <input
-            type="text"
-            value={newPageSlug}
-            onChange={(e) => setNewPageSlug(e.target.value)}
-            required
-          />
-        </div>
-        <button type="submit">Créer la page</button>
-      </form>
-       <h2>Ajouter des élements</h2>
-        <div className="main-container-content" style={{ display: 'flex', gap: '20px' }}>
-          {/* Preview zone */}
-          <div className="preview-container-content">
-            {isLoading ? (
-              <p>Chargement...</p>
-            ) : previewItems.length === 0 ? (
-              <p>Aucun contenu pour cette page.</p>
-            ) : (
-              <div>
-                {previewItems.map((item, index) => {
-                  let content: ParsedContent;
-                  try {
-                    content =
-                      typeof item.Content_Element === 'string'
-                        ? JSON.parse(item.Content_Element)
-                        : item.Content_Element;
-                  } catch (err) {
-                    console.error('Erreur JSON.parse :', err);
-                    return <p key={index}>Contenu invalide</p>;
-                  }
-
-                  switch (item.Type_Element) {
-                    case 'text':
-                      return <p key={index} style={{ margin: 0 }}>{content.text}</p>;
-                    case 'button':
-                      return (
-                        <button
-                          key={index}
-                          onClick={() => window.open(content.link, '_blank')}
-                          style={{ display: 'block', margin: 0 }}
-                        >
-                          {content.libelle}
-                        </button>
-                      );
-                    case 'image':
-                      const imageUrl = content.uri?.startsWith('http')
-                        ? content.uri
-                        : `http://localhost:3000${content.uri}`;
-                      return (
-                        <img
-                          key={index}
-                          src={imageUrl}
-                          alt={`image-${index}`}
-                          style={{ maxWidth: '100%', display: 'block', margin: 0 }}
-                        />
-                      );
-                    default:
-                      return null;
-                  }
-                })}
-              </div>
-            )}
-          </div>
-
-          {/* Formulaire */}
-          <div className="choice-container-content">
-            <div className="page-select-container" style={{ marginBottom: '15px' }}>
-              <label htmlFor="page-select">Page :</label>
-              <select
-                id="page-select"
-                value={page}
-                onChange={(e) => setPage(e.target.value)}
-                required
+      <div className="home-container" style={{ display: 'flex', gap: 20, padding: 20 }}>
+        <aside className='aside-pages-editor' style={{ width: '20vw', borderRight: '1px solid #ddd', paddingRight: 10 }}>
+          <h2>Pages</h2>
+          {pages.length === 0 && <p>Aucune page disponible</p>}
+          <ul style={{ listStyle: 'none', padding: 0 }}>
+            {pages.map((p) => (
+              <li
+                key={p.id}
+                onClick={() => setPage(p.id)}
+                style={{
+                  cursor: 'pointer',
+                  fontWeight: p.id === page ? 'bold' : 'normal',
+                  padding: '6px 4px',
+                  borderRadius: 4,
+                  backgroundColor: p.id === page ? '#eef' : undefined,
+                }}
+                aria-current={p.id === page ? 'page' : undefined}
               >
-                <option value="">-- Sélectionner une page --</option>
-                {pages.map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {p.name}
-                  </option>
-                ))}
-              </select>
-            </div>
+                {p.name}
+              </li>
+            ))}
+          </ul>
 
-            <form onSubmit={handleSubmit}>
-              <div className="choice-select-container" style={{ marginBottom: '15px' }}>
-                <label htmlFor="type-select">Type :</label>
+          <form onSubmit={handleCreatePage} style={{ marginTop: 30 }}>
+            <h3>Créer une page</h3>
+            <input
+              type="text"
+              placeholder="Titre"
+              value={newPageTitle}
+              onChange={(e) => setNewPageTitle(e.target.value)}
+              required
+              style={{ display: 'block', marginBottom: 8, width: '100%' }}
+            />
+            <input
+              type="text"
+              placeholder="Slug"
+              value={newPageSlug}
+              onChange={(e) => setNewPageSlug(e.target.value)}
+              required
+              style={{ display: 'block', marginBottom: 8, width: '100%' }}
+            />
+            <button type="submit" style={{ width: '100%' }}>
+              Créer
+            </button>
+          </form>
+        </aside>
+
+        <main style={{ flexGrow: 1 }}>
+          <section>
+            <h2>Ajouter un élément</h2>
+            <form onSubmit={handleSubmit} style={{ maxWidth: 500, marginBottom: 20 }}>
+              <label>
+                Page :
                 <select
-                  id="type-select"
-                  value={type}
-                  onChange={(e) => setType(e.target.value as 'text' | 'button' | 'image')}
+                  value={page}
+                  onChange={(e) => setPage(e.target.value)}
+                  required
+                  style={{ marginLeft: 10 }}
                 >
-                  <option value="text">Texte</option>
-                  <option value="button">Bouton</option>
-                  <option value="image">Image</option>
+                  <option value="">-- Sélectionner --</option>
+                  {pages.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.name}
+                    </option>
+                  ))}
                 </select>
+              </label>
+
+              <div style={{ marginTop: 12 }}>
+                <label>
+                  Type d'élément :
+                  <select
+                    value={type}
+                    onChange={(e) => setType(e.target.value as 'text' | 'button' | 'image')}
+                    style={{ marginLeft: 10 }}
+                  >
+                    <option value="text">Texte</option>
+                    <option value="button">Bouton</option>
+                    <option value="image">Image</option>
+                  </select>
+                </label>
               </div>
 
-              <div className="text-content-container" style={{ marginBottom: '15px' }}>
-                {type === 'text' && (
-                  <>
-                    <label htmlFor="text">Contenu :</label>
+              {type === 'text' && (
+                <div style={{ marginTop: 12 }}>
+                  <label>
+                    Texte :
                     <textarea
-                      id="text"
                       value={text}
                       onChange={(e) => setText(e.target.value)}
                       rows={4}
+                      style={{ display: 'block', width: '100%', marginTop: 4 }}
                       required
                     />
-                  </>
-                )}
-                {type === 'button' && (
-                  <>
-                    <label htmlFor="button-label">Libellé :</label>
+                  </label>
+                </div>
+              )}
+
+              {type === 'button' && (
+                <>
+                  <div style={{ marginTop: 12 }}>
+                    <label>
+                      Libellé du bouton :
+                      <input
+                        type="text"
+                        value={buttonLabel}
+                        onChange={(e) => setButtonLabel(e.target.value)}
+                        required
+                        style={{ display: 'block', width: '100%', marginTop: 4 }}
+                      />
+                    </label>
+                  </div>
+                  <div style={{ marginTop: 12 }}>
+                    <label>
+                      URL du lien :
+                      <input
+                        type="url"
+                        value={buttonLink}
+                        onChange={(e) => setButtonLink(e.target.value)}
+                        required
+                        style={{ display: 'block', width: '100%', marginTop: 4 }}
+                      />
+                    </label>
+                  </div>
+                </>
+              )}
+
+              {type === 'image' && (
+                <div style={{ marginTop: 12 }}>
+                  <label>
+                    Sélectionner une image :
                     <input
-                      id="button-label"
-                      value={buttonLabel}
-                      onChange={(e) => setButtonLabel(e.target.value)}
-                      required
-                    />
-                    <label htmlFor="button-link">Lien :</label>
-                    <input
-                      id="button-link"
-                      value={buttonLink}
-                      type="url"
-                      onChange={(e) => setButtonLink(e.target.value)}
-                      required
-                    />
-                  </>
-                )}
-                {type === 'image' && (
-                  <>
-                    <label htmlFor="image-upload">Image :</label>
-                    <input
-                      id="image-upload"
                       type="file"
                       accept="image/*"
-                      onChange={(e) =>
-                        setImageFile(e.target.files && e.target.files.length > 0 ? e.target.files[0] : null)
-                      }
+                      onChange={(e) => setImageFile(e.target.files ? e.target.files[0] : null)}
                       required
+                      style={{ display: 'block', marginTop: 4 }}
                     />
-                  </>
-                )}
-              </div>
+                  </label>
+                </div>
+              )}
 
-              <button type="submit" style={{ width: '100%' }}>
+              <button type="submit" style={{ marginTop: 20 }}>
                 Ajouter
               </button>
             </form>
-          </div>
-        </div>
-      </main>
-    </div>
+          </section>
+
+           <section>
+      <h2>Prévisualisation</h2>
+      {isLoading && <p>Chargement...</p>}
+      <div style={{ border: '1px solid #ddd', padding: 10, minHeight: 100 }}>
+        {!isLoading && previewItems.length === 0 && <p>Aucun élément à afficher.</p>}
+        {previewItems.map((item) => {
+          let content: ParsedContent = {};
+
+          try {
+            content = typeof item.Content_Element === 'string' ? JSON.parse(item.Content_Element) : item.Content_Element;
+          } catch (e) {
+            return (
+              <p key={item.ID_Element} style={{ color: 'red' }}>
+                Erreur de contenu
+              </p>
+            );
+          }
+
+          switch (item.Type_Element) {
+            case 'text':
+              return <p key={item.ID_Element}>{content.text}</p>;
+
+            case 'button':
+              return (
+                <a
+                  key={item.ID_Element}
+                  href={content.link ?? '#'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    display: 'inline-block',
+                    margin: '6px 0',
+                    padding: '6px 12px',
+                    backgroundColor: '#007bff',
+                    color: '#fff',
+                    borderRadius: 4,
+                    textDecoration: 'none',
+                  }}
+                >
+                  {content.libelle}
+                </a>
+              );
+
+            case 'image':
+              return (
+                <img
+                  key={item.ID_Element}
+                  src={content.uri}
+                  alt="Image preview"
+                  style={{ maxWidth: '100%', height: 'auto', marginTop: 10 }}
+                />
+              );
+
+            default:
+              return null;
+          }
+        })}
+      </div>
+    </section>
+
+        </main>
+
+        <OrderEditor items={previewItems} setItems={setPreviewItems} />
+      </div>
+    </>
   );
 };
 

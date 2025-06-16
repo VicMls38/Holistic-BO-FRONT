@@ -1,156 +1,518 @@
-/* home.css version full width */
-
-html, body, #root {
+/* Global reset & box-sizing */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  height: 100%;
+}
+
+/* Body & html pour 100% largeur/hauteur */
+html, body {
+  height: auto;
   width: 100%;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f0f2f5;
-  color: #333;
+  background: linear-gradient(135deg, #e0f7fa 0%, #f1f8e9 100%);
+  color: #2e3a46;
+  line-height: 1.5;
+  overflow-x: hidden; /* Pas de scroll horizontal */
 }
 
-.container {
-  width: 100%;
+/* Container principal - prend toute la hauteur */
+.home-container {
+  display: flex;
+  gap: 1.25rem; /* 20px */
+  max-width: 1200px;
+  height: 100vh; /* prend toute la hauteur viewport */
+  margin: 0 auto;
+  padding: 1rem;
+  flex-wrap: nowrap;
   box-sizing: border-box;
+  overflow: visible;
 }
 
-.main {
-  width: 100%;
-  padding: 20px;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 0 8px rgba(0,0,0,0.1);
+/* Sidebar - aside */
+aside {
+  flex: 0 0 22%;
+  min-width: 220px;
+  max-width: 280px;
+  background: #ffffffcc;
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: 0 0 15px rgba(138, 198, 169, 0.3);
+  border-right: 3px solid #a5d6a7;
+  overflow-y: auto; /* scroll interne */
+  max-height: 90vh;
+  word-wrap: break-word;
 }
 
-.title {
-  font-size: 2.2rem;
-  margin-bottom: 20px;
-  color: #2c3e50;
+/* Titres aside */
+aside h2,
+aside h3 {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+  color: #388e3c;
+  font-weight: 600;
+  font-size: 1.25rem;
+  word-wrap: break-word;
 }
 
-h2 {
-  margin-bottom: 15px;
-  color: #34495e;
+/* Liste aside */
+aside ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  overflow: visible;
 }
 
+aside ul li {
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 0.35rem;
+  border-radius: 0.4rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  user-select: none;
+  font-size: 1rem;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+aside ul li:hover,
+aside ul li:focus {
+  background-color: #c8e6c9;
+  outline: none;
+}
+
+aside ul li[aria-current="page"] {
+  font-weight: 700;
+  background-color: #a5d6a7;
+}
+
+/* Form */
 form {
-  background: #fff;
-  padding: 15px 20px;
-  border-radius: 6px;
-  box-shadow: 0 0 5px rgba(0,0,0,0.1);
-  width: 100%;
-  box-sizing: border-box;
-}
-
-form > div {
-  margin-bottom: 12px;
+  margin-top: 1.25rem;
   display: flex;
   flex-direction: column;
+  gap: 0.75rem;
 }
 
-label {
-  margin-bottom: 6px;
-  font-weight: 600;
-  font-size: 0.9rem;
-  color: #555;
-}
-
-input[type="text"],
-input[type="url"],
-textarea,
-select {
-  padding: 8px 10px;
+form input[type="text"],
+form input[type="url"],
+form select,
+form textarea {
+  font-family: inherit;
   font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  transition: border-color 0.2s ease;
-}
-
-input[type="text"]:focus,
-input[type="url"]:focus,
-textarea:focus,
-select:focus {
-  outline: none;
-  border-color: #2980b9;
-  box-shadow: 0 0 5px #2980b9;
-}
-
-textarea {
-  resize: vertical;
-  min-height: 80px;
-}
-
-button {
-  background-color: #2980b9;
-  color: white;
-  border: none;
-  padding: 10px 18px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.3s ease;
-  align-self: flex-start; /* bouton à gauche */
-}
-
-button:hover {
-  background-color: #1c5980;
-}
-
-.main-container-content {
-  display: flex;
-  gap: 30px;
-  margin-top: 30px;
-  flex-wrap: nowrap; /* pour forcer en ligne */
-  justify-content: space-between;
+  padding: 0.6rem 0.8rem;
+  border: 1.5px solid #a5d6a7;
+  border-radius: 0.5rem;
+  background-color: #f9fff9;
+  color: #2e3a46;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
   width: 100%;
   box-sizing: border-box;
+  word-wrap: break-word;
 }
 
-.preview-container-content {
-  flex: 1 1 50%;
-  background-color: #fff;
-  padding: 15px 20px;
-  border-radius: 6px;
-  box-shadow: 0 0 6px rgba(0,0,0,0.07);
-  max-height: 500px;
-  overflow-y: auto;
-  order: 2;
+form input[type="text"]:focus,
+form input[type="url"]:focus,
+form select:focus,
+form textarea:focus {
+  border-color: #388e3c;
+  background-color: #e8f5e9;
+  outline: none;
 }
 
-.choice-container-content {
-  flex: 1 1 50%;
-  background-color: #fff;
-  padding: 15px 20px;
-  border-radius: 6px;
-  box-shadow: 0 0 6px rgba(0,0,0,0.07);
-  order: 1;
-}
-
-.preview-container-content p {
-  margin-bottom: 12px;
-  line-height: 1.4;
-}
-
-.preview-container-content button {
-  margin-bottom: 12px;
-}
-
-.preview-container-content img {
+/* Boutons */
+button {
+  padding: 0.65rem 1.25rem;
+  border-radius: 0.75rem;
+  border: none;
+  background-color: #81c784;
+  color: white;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.3s ease;
+  white-space: nowrap;
   max-width: 100%;
-  border-radius: 5px;
-  margin-bottom: 12px;
+  box-sizing: border-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .main-container-content {
-    flex-direction: column;
+button:hover:not(:disabled) {
+  background-color: #4caf50;
+}
+
+button:disabled {
+  background-color: #c8e6c9;
+  cursor: default;
+}
+
+/* Main */
+main {
+  flex: 1 1 70%;
+  max-width: 900px;
+  background: #ffffffcc;
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 0 20px rgba(138, 198, 169, 0.25);
+  max-height: 90vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Titres généraux */
+h2, h3 {
+  margin: 0 0 1rem 0;
+  color: #2e7d32;
+  font-weight: 700;
+  word-wrap: break-word;
+}
+
+/* Style principal order-editor */
+.order-editor {
+  width: 100% !important;
+  background: #ffffffcc; /* comme main et aside */
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(138, 198, 169, 0.25);
+  padding: 1.5rem 2rem;
+  max-height: 80vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  color: #2e3a46;
+  font-weight: 500;
+  font-size: 1rem;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  transition: box-shadow 0.3s ease;
+}
+
+.order-editor:hover,
+.order-editor:focus-within {
+  box-shadow: 0 8px 30px rgba(100, 180, 100, 0.4);
+}
+
+/* Titre dans order-editor */
+.order-editor > h3 {
+  color: #388e3c;
+  font-weight: 700;
+  font-size: 1.4rem;
+  margin-bottom: 0.75rem;
+  user-select: none;
+}
+
+/* Liste dans order-editor */
+.order-editor ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 50vh;
+  overflow-y: auto;
+  border: 1.5px solid #a5d6a7;
+  border-radius: 10px;
+  background: #f9fff9;
+  box-shadow: inset 0 1px 4px rgba(138,198,169,0.2);
+}
+
+/* Items de la liste */
+.order-editor li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid #c8e6c9;
+  color: #33691e;
+  font-weight: 600;
+  user-select: none;
+  transition: background-color 0.2s ease;
+  cursor: grab;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.order-editor li:last-child {
+  border-bottom: none;
+}
+
+.order-editor li:hover,
+.order-editor li:focus {
+  background-color: #dcedc8;
+  outline: none;
+}
+
+/* Texte de l’item */
+.order-editor li span {
+  flex-grow: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* Boutons dans order-editor */
+.order-editor button {
+  background-color: #81c784;
+  border: none;
+  color: white;
+  font-weight: 700;
+  border-radius: 0.5rem;
+  padding: 0.3rem 0.8rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  user-select: none;
+  font-size: 0.95rem;
+  margin-left: 0.5rem;
+  white-space: nowrap;
+}
+
+.order-editor button:hover:not(:disabled) {
+  background-color: #4caf50;
+}
+
+.order-editor button:disabled {
+  background-color: #c8e6c9;
+  cursor: default;
+  color: #6d6d6d;
+}
+
+/* Scrollbar personnalisée */
+.order-editor::-webkit-scrollbar {
+  width: 8px;
+}
+
+.order-editor::-webkit-scrollbar-track {
+  background: #f1f8e9;
+  border-radius: 8px;
+}
+
+.order-editor::-webkit-scrollbar-thumb {
+  background-color: #81c784;
+  border-radius: 8px;
+}
+
+
+
+
+/* Modifier l'ordre (anciennement order-editor) */
+.modifier-ordre {
+  border: 1.5px solid #a5d6a7;
+  border-radius: 0.75rem;
+  background: #f1f8e9;
+  padding: 1rem;
+  max-width: 320px;
+  max-height: 50vh;
+  overflow-y: auto;
+  box-shadow: 0 2px 8px rgba(100, 140, 90, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  word-wrap: break-word;
+}
+
+.modifier-ordre h3 {
+  margin-top: 0;
+  color: #33691e;
+}
+
+.modifier-ordre ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: none;
+  overflow-y: visible;
+}
+
+.modifier-ordre li {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 0.35rem;
+  background-color: #dcedc8;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  color: #33691e;
+  user-select: none;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.modifier-ordre li span {
+  flex-grow: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.modifier-ordre button {
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.4rem;
+  background-color: #aed581;
+  color: #33691e;
+  border: none;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s ease;
+  margin-left: 0.5rem;
+  white-space: nowrap;
+}
+
+.modifier-ordre button:hover:not(:disabled) {
+  background-color: #7cb342;
+  color: white;
+}
+
+.modifier-ordre button:disabled {
+  background-color: #e6ee9c;
+  color: #9e9e9e;
+  cursor: default;
+}
+
+/* Images : s’adaptent au container */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  object-fit: contain;
+}
+
+/* Scrollbar personnalisée */
+.modifier-ordre::-webkit-scrollbar,
+aside::-webkit-scrollbar,
+main::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modifier-ordre::-webkit-scrollbar-track,
+aside::-webkit-scrollbar-track,
+main::-webkit-scrollbar-track {
+  background: #f1f8e9;
+  border-radius: 6px;
+}
+
+.modifier-ordre::-webkit-scrollbar-thumb,
+aside::-webkit-scrollbar-thumb,
+main::-webkit-scrollbar-thumb {
+  background-color: #81c784;
+  border-radius: 6px;
+}
+
+/* Alert messages */
+.alert {
+  background-color: #ffebee;
+  border-left: 5px solid #e53935;
+  color: #b71c1c;
+  padding: 0.75rem 1rem;
+  margin: 1rem 0;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Responsive tablette et mobile */
+@media (max-width: 1024px) {
+  .home-container {
+    flex-wrap: wrap;
+    justify-content: center;
+    height: auto; /* pour éviter contraintes trop strictes */
   }
 
-  .preview-container-content,
-  .choice-container-content {
+  aside {
     flex: 1 1 100%;
+    max-width: 100%;
+    border-right: none;
+    border-bottom: 3px solid #a5d6a7;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+    overflow-y: auto;
+    max-height: 40vh;
+  }
+
+  main {
+    flex: 1 1 100%;
+    max-width: 100%;
     max-height: none;
+    padding: 1rem;
+  }
+
+  .order-editor{
+    width: 100% !important;
+  }
+
+
+  /* Modifier ordre plus fluide */
+  .modifier-ordre {
+    max-width: 100%;
+    max-height: none;
+    padding: 1rem 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  html, body {
+    font-size: 14px; /* un peu plus petit */
+  }
+
+  .home-container {
+    width: 100% !important;
+    flex-direction: column; /* empile les blocs verticalement */
+    gap: 0.5rem;
+    padding: 0.5rem 1rem; /* réduis un peu le padding horizontal */
+    height: auto; /* pour que ça ne force pas la hauteur */
+  }
+
+  aside {
+    flex: 1 1 100%;
+    max-width: 100%;
+    border-right: none;
+    border-bottom: 3px solid #a5d6a7;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+    max-height: none; /* on enlève la contrainte de hauteur */
+    overflow-y: visible; /* mieux sur mobile */
+  }
+
+  main {
+    flex: 1 1 100%;
+    max-width: 100%;
+    max-height: none;
+    padding: 1rem 0.5rem;
+  }
+
+  .order-editor {
+    width: 100% !important;
+    max-height: none;
+    padding: 1rem;
+  }
+
+  .modifier-ordre {
+    max-width: 100%;
+    max-height: none;
+    padding: 1rem 0.5rem;
+  }
+
+  /* Boutons : éviter le white-space nowrap sur petit écran */
+  button {
+    white-space: normal;
+  }
+
+  /* Listes et textes : permettre le wrapping */
+  aside ul li,
+  .order-editor li span,
+  .modifier-ordre li span {
+    white-space: normal;
   }
 }
