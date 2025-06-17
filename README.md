@@ -7,8 +7,6 @@ Ce projet est une application front-end développée avec **React**, **Vite**, e
 - [React](https://reactjs.org/)
 - [Vite](https://vitejs.dev/)
 - [TypeScript](https://www.typescriptlang.org/)
-- [React Router](https://reactrouter.com/) *(optionnel)*
-- [Tailwind CSS](https://tailwindcss.com/) *(si utilisé)*
 
 ## 🚀 Lancement en développement
 
